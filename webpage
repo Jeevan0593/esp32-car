@@ -1,0 +1,41 @@
+void handleRoot() {
+  const char html[] PROGMEM = R"rawliteral(
+  <!DOCTYPE HTML><html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <style>
+      html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center; }
+      .button { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; background-color: #4CAF50; border: none; color: white; padding: 12px 28px; text-decoration: none; font-size: 26px; margin: 1px; cursor: pointer; }
+      .button2 {background-color: #555555;}
+    </style>
+    <script>
+      function moveForward() { fetch('/forward'); }
+      function moveLeft() { fetch('/left'); }
+      function stopRobot() { fetch('/stop'); }
+      function moveRight() { fetch('/right'); }
+      function moveReverse() { fetch('/reverse'); }
+
+      function updateMotorSpeed(pos) {
+        document.getElementById('motorSpeed').innerHTML = pos;
+        fetch(`/speed?value=${pos}`);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>ESP32 Motor Control</h1>
+    <p><button class="button" onclick="moveForward()">FORWARD</button></p>
+    <div style="clear: both;">
+      <p>
+        <button class="button" onclick="moveLeft()">LEFT</button>
+        <button class="button button2" onclick="stopRobot()">STOP</button>
+        <button class="button" onclick="moveRight()">RIGHT</button>
+      </p>
+    </div>
+    <p><button class="button" onclick="moveReverse()">REVERSE</button></p>
+    <p>Motor Speed: <span id="motorSpeed">0</span></p>
+    <input type="range" min="0" max="100" step="25" id="motorSlider" oninput="updateMotorSpeed(this.value)" value="0"/>
+  </body>
+  </html>)rawliteral";
+  server.send(200, "text/html", html);
+}
